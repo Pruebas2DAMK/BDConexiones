@@ -1,5 +1,6 @@
 package mysql;
 
+import com.mysql.cj.protocol.Resultset;
 import modelo.Login;
 import singleton.ConexionBD;
 
@@ -77,9 +78,22 @@ public class LoginAccessDB {
         statement.executeUpdate(sql);
     }
 
+    public static String dameCosicas(int id) throws SQLException {
+        String cadena="";
+        String sql = "SELECT * FROM login WHERE id = "+id;
+        Statement statement = con.createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        while (rs.next()){
+            cadena = rs.getInt("id")+" - "+rs.getString("username")+" - "+rs.getString("password")+" - "+rs.getDate("created_at");
+
+
+        }
+        return cadena;
+    }
+
     public static void main(String[] args){
         try{
-           actualizaUser(new Login(1,"Alex_Actualizado","alexNew"));
+            System.out.println(dameCosicas(3));
         }catch (SQLException e){
             e.printStackTrace();
         }
