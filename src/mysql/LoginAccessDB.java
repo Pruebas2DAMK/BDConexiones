@@ -37,4 +37,52 @@ public class LoginAccessDB {
         }
         return logins;
     }
+    /*
+    Comprueba si existe ese usuario con su clave correspondiente en la base de datos
+     */
+    public static String getLogin(String name, String password) throws SQLException {
+        String salida="";
+        String sql = "SELECT * FROM login where username LIKE \'"+name+"\' AND password LIKE \'"+ password+"\'";
+        Statement statement = con.createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        Login login = new Login();
+
+           if(rs.next() == false){
+                 salida="Contraseña o usuario incorrectos";
+            }else{
+               do {
+                   login.setUsername(rs.getString("username"));
+                   login.setPassword(rs.getString("password"));
+                   salida = login.getUsername() + " - " + login.getPassword();
+               }while (rs.next());
+           }
+        return salida;
+    }
+    public static void insertaUser(Login login) throws SQLException {
+        String sql = "INSERT INTO login (username,password)VALUES (\'"+login.getUsername()+"\',\'"+login.getPassword()+"\')";
+        Statement statement = con.createStatement();
+        statement.executeUpdate(sql);
+
+    }
+    public static void borraUser(Login login) throws SQLException {
+        String sql = "DELETE FROM login WHERE username LIKE \'"+login.getUsername()+"\'";
+        Statement statement = con.createStatement();
+        statement.executeUpdate(sql);
+    }
+
+    public static void actualizaUser(Login login) throws SQLException {
+        String sql = "UPDATE login set username = \'"+login.getUsername()+"\' , password = \'"+login.getPassword()+"\' WHERE id = "+login.getId();
+        //System.out.println(sql);
+        Statement statement = con.createStatement();
+        statement.executeUpdate(sql);
+    }
+
+    public static void main(String[] args){
+        try{
+           actualizaUser(new Login(1,"Alex_Actualizado","alexNew"));
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+    }
 }
